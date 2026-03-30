@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TaskServiceImpl implements TaskService
 {
-    TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     @Override
     public Task createTask(Task task)
