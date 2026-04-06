@@ -3,7 +3,6 @@ package com.proyecto.todolistapplication.service;
 import com.proyecto.todolistapplication.model.User;
 import com.proyecto.todolistapplication.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserService
 {
     private final UsersRepository repo;
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private final PasswordEncoder encoder;
 
     public User registerUser(User user)
     {
