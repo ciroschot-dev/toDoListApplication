@@ -1,6 +1,6 @@
 package com.proyecto.todolistapplication.config;
 
-import com.proyecto.todolistapplication.service.UserService;
+import com.proyecto.todolistapplication.service.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,7 +9,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 // Marks this class as a Spring configuration class.
@@ -36,10 +36,10 @@ public class SecurityConfig
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserService userDetailsService)
+    public AuthenticationProvider authenticationProvider(MyUserDetailsService userDetailsService)
     {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         return provider;
     }
 }
