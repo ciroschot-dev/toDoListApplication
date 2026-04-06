@@ -30,33 +30,15 @@ public class TaskServiceImpl implements TaskService
     @Override
     public Task findTaskById(long id)
     {
-        Task task;
-
-        if (taskRepository.findById(id).isPresent())
-        {
-            task = taskRepository.findById(id).get();
-        }
-        else
-        {
-            throw new TaskNotFoundException(id);
-        }
-
-        return task;
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     @Override
     public Task updateTask(Task task, long id)
     {
-        Task existingTask;
-
-        if (taskRepository.findById(id).isPresent())
-        {
-            existingTask = taskRepository.findById(id).get();
-        }
-        else
-        {
-            throw new TaskNotFoundException(id);
-        }
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
 
         existingTask.setTitle(task.getTitle());
         existingTask.setCompleted(task.isCompleted());
@@ -67,13 +49,10 @@ public class TaskServiceImpl implements TaskService
     @Override
     public void deleteTask(long id)
     {
-        if (taskRepository.findById(id).isPresent())
-        {
-            taskRepository.deleteById(id);
-        }
-        else
+        if (!taskRepository.existsById(id))
         {
             throw new TaskNotFoundException(id);
         }
+        taskRepository.deleteById(id);
     }
 }
