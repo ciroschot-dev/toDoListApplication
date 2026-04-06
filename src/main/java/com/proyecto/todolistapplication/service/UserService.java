@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class UserService
 {
     private final UsersRepository repo;
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public User registerUser(User user)
     {
