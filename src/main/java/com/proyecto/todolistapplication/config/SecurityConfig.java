@@ -33,8 +33,10 @@ public class SecurityConfig
         return http
                 // In stateless REST APIs without forms, CSRF is usually disabled.
                 .csrf(customizer -> customizer.disable())
-                // Every request requires an authenticated user.
-                .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
+                // Every request requires an authenticated user, except in the register.
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/todo-app/register").permitAll()
+                        .anyRequest().authenticated())
                 // Uses HTTP Basic authentication (username/password on each request).
                 .httpBasic(Customizer.withDefaults())
                 // Does not keep server-side session state; each request must be authenticated.
