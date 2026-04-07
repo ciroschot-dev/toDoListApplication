@@ -1,11 +1,10 @@
 package com.proyecto.todolistapplication.config;
 
+import com.proyecto.todolistapplication.service.JWTService;
 import com.proyecto.todolistapplication.service.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 // Marks this class as a Spring configuration class.
 @Configuration
@@ -31,7 +31,7 @@ public class SecurityConfig
 
     // Registers the main security filter chain for HTTP requests.
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTService jwtService, MyUserDetailsService userDetailsService)
     {
         return http
                 // In stateless REST APIs without forms, CSRF is usually disabled.
@@ -45,15 +45,8 @@ public class SecurityConfig
                 // Does not keep server-side session state; each request must be authenticated.
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new JwtFilter(jwtService, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider(MyUserDetailsService userDetailsService, PasswordEncoder encoder)
-    {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(encoder);
-        return provider;
     }
 
     @Bean
