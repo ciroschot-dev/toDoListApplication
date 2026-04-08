@@ -42,7 +42,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler
         String token = jwtService.generateToken(email);
 
         // 3. Redirect to the frontend callback URL and include the token as a query param.
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth2/redirect")
+        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/todo-app")
                 .queryParam("token", token)
                 .build().toUriString();
 
