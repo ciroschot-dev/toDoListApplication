@@ -16,14 +16,15 @@ public class TaskService
 {
     private final TaskRepository taskRepository;
 
-    public Task createTask(Task task)
+    public Task createTask(Task task, User user)
     {
+        task.setUser(user);
         return taskRepository.save(task);
     }
 
     public List<Task> findAllTasksByUser(User user)
     {
-        return taskRepository.findByUser(user);
+        return taskRepository.findTasksByUser(user);
     }
 
     public Task findTaskById(long id)
