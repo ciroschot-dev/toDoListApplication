@@ -1,5 +1,6 @@
 package com.proyecto.todolistapplication.controller;
 
+import com.proyecto.todolistapplication.config.AuthenticateResponse;
 import com.proyecto.todolistapplication.model.User;
 import com.proyecto.todolistapplication.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class UserController
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user)
+    public ResponseEntity<AuthenticateResponse> loginUser(@RequestBody User user)
     {
         return ResponseEntity.ok(userService.authenticateUser(user));
     }

@@ -31,7 +31,13 @@ public class SecurityConfig
 
     // Registers the main security filter chain for HTTP requests.
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTService jwtService, MyUserDetailsService userDetailsService)
+    public SecurityFilterChain securityFilterChain
+    (
+            HttpSecurity http,
+            JWTService jwtService,
+            MyUserDetailsService userDetailsService,
+            OAuth2SuccessHandler oauth2SuccessHandler
+    )
     {
         return http
                 // In stateless REST APIs without forms, CSRF is usually disabled.
@@ -42,6 +48,8 @@ public class SecurityConfig
                         .anyRequest().authenticated())
                 // Uses HTTP Basic authentication (username/password on each request).
                 .httpBasic(Customizer.withDefaults())
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oauth2SuccessHandler))
                 // Does not keep server-side session state; each request must be authenticated.
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
