@@ -32,11 +32,4 @@ public class GlobalExceptionHandler
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(exception.getMessage());
     }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<String> handleBadCredentials(NullPointerException exception)
-    {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
-    }
 }
