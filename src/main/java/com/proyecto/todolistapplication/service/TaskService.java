@@ -5,6 +5,7 @@ import com.proyecto.todolistapplication.model.Task;
 import com.proyecto.todolistapplication.model.User;
 import com.proyecto.todolistapplication.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,16 +28,28 @@ public class TaskService
         return taskRepository.findTasksByUser(user);
     }
 
-    public Task findTaskById(long id)
+    public Task findTaskById(long id, User user)
     {
-        return taskRepository.findById(id)
+        Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
+
+        if (!taskBelongToUser(task, user))
+        {
+            throw new AccessDeniedException("You dont have permission to view this task");
+        }
+
+        return task;
     }
 
-    public Task updateTask(Task task, long id)
+    public Task updateTask(Task task, long id, User user)
     {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
+
+        if (!taskBelongToUser(task, user))
+        {
+            throw new AccessDeniedException("You dont have permission to update this task");
+        }
 
         existingTask.setTitle(task.getTitle());
         existingTask.setCompleted(task.isCompleted());
@@ -44,12 +57,21 @@ public class TaskService
         return taskRepository.save(existingTask);
     }
 
-    public void deleteTask(long id)
+    public void deleteTask(long id, User user)
     {
-        if (!taskRepository.existsById(id))
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        if (!taskBelongToUser(task, user))
         {
-            throw new TaskNotFoundException(id);
+            throw new AccessDeniedException("You dont have permission to delete this task");
         }
+
         taskRepository.deleteById(id);
+    }
+
+    public boolean taskBelongToUser(Task task, User user)
+    {
+        return task.getUser().getId().equals(user.getId());
     }
 }
