@@ -4,6 +4,7 @@ import com.proyecto.todolistapplication.model.User;
 import com.proyecto.todolistapplication.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +37,6 @@ public class UserService
             return jwtService.generateToken(user.getUsername());
         }
 
-        return "Invalid username or password";
+        throw new BadCredentialsException("Usuario o contraseña incorrectos");
     }
 }
