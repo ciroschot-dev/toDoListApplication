@@ -1,5 +1,6 @@
 package com.proyecto.todolistapplication.service;
 
+import com.proyecto.todolistapplication.config.AuthenticateResponse;
 import com.proyecto.todolistapplication.model.User;
 import com.proyecto.todolistapplication.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +28,15 @@ public class UserService
         return repo.save(user);
     }
 
-    public String authenticateUser(User user)
+    public AuthenticateResponse authenticateUser(User user)
     {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
         if (authentication.isAuthenticated())
         {
-            return jwtService.generateToken(user.getUsername());
+            String token = jwtService.generateToken(user.getUsername());
+            return new AuthenticateResponse(token);
         }
 
         throw new BadCredentialsException("Usuario o contraseña incorrectos");
