@@ -1,18 +1,54 @@
 package com.proyecto.todolistapplication.service;
 
+import com.proyecto.todolistapplication.exception.TaskNotFoundException;
 import com.proyecto.todolistapplication.model.Task;
+import com.proyecto.todolistapplication.model.User;
+import com.proyecto.todolistapplication.repository.TaskRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface TaskService
+@Service
+@RequiredArgsConstructor
+
+public class TaskService
 {
-    Task createTask(Task task);
+    private final TaskRepository taskRepository;
 
-    List<Task> findAllTasks();
+    public Task createTask(Task task)
+    {
+        return taskRepository.save(task);
+    }
 
-    Task findTaskById(long id);
+    public List<Task> findAllTasksByUser(User user)
+    {
+        return taskRepository.findByUser(user);
+    }
 
-    Task updateTask(Task task, long id);
+    public Task findTaskById(long id)
+    {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+    }
 
-    void deleteTask(long id);
+    public Task updateTask(Task task, long id)
+    {
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        existingTask.setTitle(task.getTitle());
+        existingTask.setCompleted(task.isCompleted());
+
+        return taskRepository.save(existingTask);
+    }
+
+    public void deleteTask(long id)
+    {
+        if (!taskRepository.existsById(id))
+        {
+            throw new TaskNotFoundException(id);
+        }
+        taskRepository.deleteById(id);
+    }
 }
