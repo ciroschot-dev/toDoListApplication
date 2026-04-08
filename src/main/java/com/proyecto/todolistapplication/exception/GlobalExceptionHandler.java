@@ -6,6 +6,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
+
 @RestControllerAdvice
 
 public class GlobalExceptionHandler
@@ -21,6 +23,20 @@ public class GlobalExceptionHandler
     public ResponseEntity<String> handleBadCredentials(BadCredentialsException exception)
     {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleBadCredentials(AccessDeniedException exception)
+    {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleBadCredentials(NullPointerException exception)
+    {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
 }
