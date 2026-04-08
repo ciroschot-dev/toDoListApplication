@@ -42,6 +42,7 @@ public class SecurityConfig
                         .anyRequest().authenticated())
                 // Uses HTTP Basic authentication (username/password on each request).
                 .httpBasic(Customizer.withDefaults())
+                .oauth2Login(Customizer.withDefaults())
                 // Does not keep server-side session state; each request must be authenticated.
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
